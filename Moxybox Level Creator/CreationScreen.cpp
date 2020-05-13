@@ -342,65 +342,6 @@ CreationScreen::CreationScreen(QWidget *parent)
 		}
 	}
 
-	//uiMenuLayout.get()->addWidget(uiMenuBtnResume.get(), 0, 0, Qt::AlignTop);
-	//uiMenuLayout.get()->addWidget(uiMenuBtnSave.get(), 1, 0, Qt::AlignTop);
-	//uiMenuLayout.get()->addWidget(uiMenuBtnSaveAs.get(), 2, 0, Qt::AlignTop);
-	//uiMenuLayout.get()->addWidget(uiMenuBtnLoad.get(), 3, 0, Qt::AlignTop);
-	//uiMenuLayout.get()->addWidget(uiMenuBtnReset.get(), 4, 0, Qt::AlignTop);
-	//uiMenuLayout.get()->addWidget(uiMenuBtnExit.get(), 5, 0, Qt::AlignTop);
-
-	//uiMenuBtnResume.get()->setFixedSize(QSize(uiMenuBtnWidth, uiMenuBtnHeight));
-	//uiMenuBtnResume.get()->setStyleSheet(styleMap.at("uiMenuBtnStyle"));
-	//uiMenuBtnResume.get()->setFont(uiMenuFontBtn);
-	//uiMenuBtnResume.get()->setText("RESUME");
-
-	//uiMenuBtnSave.get()->setFixedSize(QSize(uiMenuBtnWidth, uiMenuBtnHeight));
-	//uiMenuBtnSave.get()->setStyleSheet(styleMap.at("uiMenuBtnStyle"));
-	//uiMenuBtnSave.get()->setFont(uiMenuFontBtn);
-	//uiMenuBtnSave.get()->setText("SAVE");
-
-	//uiMenuBtnSaveAs.get()->setFixedSize(QSize(uiMenuBtnWidth, uiMenuBtnHeight));
-	//uiMenuBtnSaveAs.get()->setStyleSheet(styleMap.at("uiMenuBtnStyle"));
-	//uiMenuBtnSaveAs.get()->setFont(uiMenuFontBtn);
-	//uiMenuBtnSaveAs.get()->setText("SAVE AS...");
-
-	//uiMenuBtnLoad.get()->setFixedSize(QSize(uiMenuBtnWidth, uiMenuBtnHeight));
-	//uiMenuBtnLoad.get()->setStyleSheet(styleMap.at("uiMenuBtnStyle"));
-	//uiMenuBtnLoad.get()->setFont(uiMenuFontBtn);
-	//uiMenuBtnLoad.get()->setText("OPEN...");
-
-	//uiMenuBtnReset.get()->setFixedSize(QSize(uiMenuBtnWidth, uiMenuBtnHeight));
-	//uiMenuBtnReset.get()->setStyleSheet(styleMap.at("uiMenuBtnStyle"));
-	//uiMenuBtnReset.get()->setFont(uiMenuFontBtn);
-	//uiMenuBtnReset.get()->setText("NEW");
-
-	//uiMenuBtnExit.get()->setFixedSize(QSize(uiMenuBtnWidth, uiMenuBtnHeight));
-	//uiMenuBtnExit.get()->setStyleSheet(styleMap.at("uiMenuBtnStyle"));
-	//uiMenuBtnExit.get()->setFont(uiMenuFontBtn);
-	//uiMenuBtnExit.get()->setText("EXIT GAME");
-
-	//connect(uiMenuBtnResume.get(), &QPushButton::clicked, this, [=]() {
-	//	if (gameState == GameState::PAUSED)
-	//	{
-	//		uiMenuResumeCreating();
-	//	}
-	//});
-
-	//connect(uiMenuBtnSave.get(), &QPushButton::clicked, this, &CreationScreen::fileSaveOperationType);
-
-	//connect(uiMenuBtnSaveAs.get(), &QPushButton::clicked, this, &CreationScreen::fileSaveAs);
-
-	//connect(uiMenuBtnLoad.get(), &QPushButton::clicked, this, &CreationScreen::fileLoad);
-
-	//connect(uiMenuBtnReset.get(), &QPushButton::clicked, this, &CreationScreen::fileNew);
-
-	//connect(uiMenuBtnExit.get(), &QPushButton::clicked, this, [=]() {
-	//	if (gameState == GameState::PAUSED)
-	//	{
-	//		this->parentWidget()->parentWidget()->close();
-	//	}
-	//});
-
 	uiMenuGroup.get()->setVisible(false);
 
 	// LEVEL MODIFIED SIGNAL CHECKS:
@@ -1242,21 +1183,6 @@ void CreationScreen::keyReleaseEvent(QKeyEvent *event)
 						return;
 					}
 				}
-
-				/*QMessageBox qMsg(this->parentWidget());
-				qMsg.setStyleSheet(styleMap.at("uiMessageBoxStyle"));
-				qMsg.setWindowTitle("Keybind In Use");
-				qMsg.setText("That key is already bound to a command.");
-				qMsg.setStandardButtons(QMessageBox::Ok);
-				qMsg.setDefaultButton(QMessageBox::Ok);
-				qMsg.setFont(uiGameplayFontTextBox);
-				qMsg.button(QMessageBox::Ok)->setFont(uiGameplayFontTextBox);
-				qMsg.exec();*/
-
-				/*QMessageBox::information(this->parentWidget(),
-					tr("Keybind In Use"),
-					tr("That key is already bound to a command.")
-				);*/
 			}
 			else if (newKeybind == Qt::Key_Control || newKeybind == Qt::Key_Shift)
 			{
@@ -1269,11 +1195,6 @@ void CreationScreen::keyReleaseEvent(QKeyEvent *event)
 				qMsg.setFont(uiGameplayFontTextBox);
 				qMsg.button(QMessageBox::Ok)->setFont(uiGameplayFontTextBox);
 				qMsg.exec();
-
-				/*QMessageBox::information(this->parentWidget(),
-					tr("Keybind Invalid"),
-					tr("Ctrl and Shift are not valid key input.")
-				);*/
 			}
 			else
 			{
@@ -1601,7 +1522,6 @@ bool CreationScreen::fileSave(const QString &fpath)
 		setLevelModified(false);
 		updateWindowTitle(QFileInfo(fpath).baseName());
 		uiGameplayMessagesTextBox.get()->setText(uiGameplayMessagesFileSaved);
-		//updateWindowTitle(QFileInfo(proposedSaveName).baseName());
 		uiMenuResumeCreating();
 		return true;
 	}
@@ -1616,7 +1536,7 @@ void CreationScreen::fileNew()
 		{
 			// UI inputs all need to be set to default values, with the exception of keybinds, 
 			// which are considered to be independent from level creation,
-			// since they only impact this program itself, not created/saved levels.
+			// since they only impact the program itself, not created/saved levels.
 			uiGameplaySetToDefaults();
 
 			// Note: We remove the items from the scene before clearing the maps,
@@ -1688,10 +1608,6 @@ void CreationScreen::fileLoad()
 				QTextStream qStream(&fileRead);
 				while (!qStream.atEnd())
 				{
-					// First check for basic properties:
-					// Difficulty, Turns Remaining for level completion,
-					// Id (level creation tool should generate a unique ID from creator name
-					// and level name using hash algorithm)
 					QString line = qStream.readLine();
 					if (line.contains("::Id="))
 					{

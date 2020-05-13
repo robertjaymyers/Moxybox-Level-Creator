@@ -51,7 +51,13 @@ private:
 	const QString winTitlePlaceholder = "[*]";
 	const QString winTitleUntitled = "Untitled";
 
-	//QString baseStyle = "border: 0px; background-color: #000000;";
+	enum class GameState { NONE, CREATING, PAUSED, KEYBINDING, INPUTTING };
+	GameState gameState = GameState::NONE;
+
+	bool levelModified = false;
+
+	// These are the miscellaneous theme files where putting them in a map would be overkill.
+	// Other theme files are below in image and style maps.
 	QString standardFontFamily = "Pixellari";
 	QFont::StyleStrategy standardFontStyleStrategy = QFont::NoAntialias;
 	QFont::Weight standardFontWeight = QFont::Normal;
@@ -59,10 +65,11 @@ private:
 	int uiGameplayFontTextBox_fontPointSize = 12;
 	int uiMenuFontBtn_fontPointSize = 14;
 
-	enum class GameState { NONE, CREATING, PAUSED, KEYBINDING, INPUTTING };
-	GameState gameState = GameState::NONE;
-
-	bool levelModified = false;
+	// Using maps for images and style with string keys allows us to greatly simplify and standardize the logic
+	// for setting them initially and in relation to themes. We can use the string key as the variable reference
+	// in theme files. And load them more procedurally, in a loop, rather than going through a boilerplate series
+	// of if statements. This also makes it easier to keep track, at a glance, what all modifiable images and stylesheets
+	// are involved in the program.
 
 	//---------
 	// IMAGES
@@ -214,43 +221,6 @@ private:
 	// Reason: This is done to simplify the data storing/loading process for levels and keep it the same for all types of data.
 	// It also leaves less obstacles to changing players to have more than one in the future, if desired.
 	int pIndex = 0;
-
-	//const QPixmap imgTokenPlacingOutline = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPlacingOutline.png");
-
-	//QPixmap imgImmobileKey = QPixmap(":/MoxyboxLevelCreator/Resources/tokenImmobileKey.png");
-	//QPixmap imgImmobileGate = QPixmap(":/MoxyboxLevelCreator/Resources/tokenImmobileGate.png");
-	//QPixmap imgImmobileBlock = QPixmap(":/MoxyboxLevelCreator/Resources/tokenImmobileBlock.png");
-	//QPixmap imgImmobileHazard = QPixmap(":/MoxyboxLevelCreator/Resources/tokenImmobileHazard.png");
-
-	//QPixmap imgPlayer = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPlayer.png");
-
-	// Note that we could fiddle around with manually rotating a single QPixmap, rather than using multiple images.
-	// But, this would mean if someone chooses to do an art style that is not top-down, they'll be stuck with
-	// using the rotated versions of a single image for Left/Right/Up/Down. In some art styles, this means
-	// it won't look right at all. The back of something might look drastically different from the front and need
-	// to be drawn specifically to convey that perspective.
-	//QPixmap imgPatrollerPusherLeft = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerPusherLeft.png");
-	//QPixmap imgPatrollerPusherRight = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerPusherRight.png");
-	//QPixmap imgPatrollerPusherUp = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerPusherUp.png");
-	//QPixmap imgPatrollerPusherDown = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerPusherDown.png");
-	//QPixmap imgPatrollerSuckerLeft = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerSuckerLeft.png");
-	//QPixmap imgPatrollerSuckerRight = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerSuckerRight.png");
-	//QPixmap imgPatrollerSuckerUp = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerSuckerUp.png");
-	//QPixmap imgPatrollerSuckerDown = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerSuckerDown.png");
-
-	//QPixmap imgPatrollerPusherLeftRange = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerPusherLeftRange.png");
-	//QPixmap imgPatrollerPusherRightRange = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerPusherRightRange.png");
-	//QPixmap imgPatrollerPusherUpRange = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerPusherUpRange.png");
-	//QPixmap imgPatrollerPusherDownRange = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerPusherDownRange.png");
-	//QPixmap imgPatrollerSuckerLeftRange = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerSuckerLeftRange.png");
-	//QPixmap imgPatrollerSuckerRightRange = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerSuckerRightRange.png");
-	//QPixmap imgPatrollerSuckerUpRange = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerSuckerUpRange.png");
-	//QPixmap imgPatrollerSuckerDownRange = QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerSuckerDownRange.png");
-
-	//QPixmap imgUtilPusherInactive = QPixmap(":/MoxyboxLevelCreator/Resources/tokenUtilPusherInactive.png");
-	//QPixmap imgUtilPusherActive = QPixmap(":/MoxyboxLevelCreator/Resources/tokenUtilPusherActive.png");
-	//QPixmap imgUtilSuckerInactive = QPixmap(":/MoxyboxLevelCreator/Resources/tokenUtilSuckerInactive.png");
-	//QPixmap imgUtilSuckerActive = QPixmap(":/MoxyboxLevelCreator/Resources/tokenUtilSuckerActive.png");
 
 	// Z value for mobile tokens should be higher than that of grid pieces to be atop them.
 	// And higher than that of immobile tokens (ex: player would be atop utility token).
@@ -530,16 +500,6 @@ private:
 	const int screenWidth = 800;
 	const int screenHeight = 600;
 
-	//QPixmap imgGridCornerUpL = QPixmap(":/MoxyboxLevelCreator/Resources/gridTextureCornerUpL.png");
-	//QPixmap imgGridCornerUpR = QPixmap(":/MoxyboxLevelCreator/Resources/gridTextureCornerUpR.png");
-	//QPixmap imgGridCornerDownL = QPixmap(":/MoxyboxLevelCreator/Resources/gridTextureCornerDownL.png");
-	//QPixmap imgGridCornerDownR = QPixmap(":/MoxyboxLevelCreator/Resources/gridTextureCornerDownR.png");
-	//QPixmap imgGridInner = QPixmap(":/MoxyboxLevelCreator/Resources/gridTextureInner.png");
-	//QPixmap imgGridEdgeUpX = QPixmap(":/MoxyboxLevelCreator/Resources/gridTextureEdgeUpX.png");
-	//QPixmap imgGridEdgeDownX = QPixmap(":/MoxyboxLevelCreator/Resources/gridTextureEdgeDownX.png");
-	//QPixmap imgGridEdgeLeftY = QPixmap(":/MoxyboxLevelCreator/Resources/gridTextureEdgeLeftY.png");
-	//QPixmap imgGridEdgeRightY = QPixmap(":/MoxyboxLevelCreator/Resources/gridTextureEdgeRightY.png");
-
 	// ------------
 	// LEVEL DATA
 	// ------------
@@ -685,54 +645,7 @@ private:
 	const QString uiGameplayKeymapGroupTitleDefault = "Keybinds";
 	const QString uiGameplayKeymapGroupTitleKeybinding = "Hit Key to Set";
 
-	/*QString uiGameplayGroupBoxStyle =
-	{
-		"QGroupBox { border-width: 1px;  border-style: solid;  border-color: #8E7320; background-color: #674003; }"
-		"QGroupBox::title { border-width: 1px;  border-top-width: 0px;  border-style: solid;  border-color: #191405;  background-color: #8D9E45;  color: #191405;  subcontrol-origin: margin;  left: 5px; }"
-		"QGroupBox::indicator { border-width: 0px;  background-color: #8D9E45;  color: #191405; }"
-		"QGroupBox::indicator:checked { image: url(:/MoxyboxLevelCreator/Resources/uiGameplayCheckBoxChecked.png); }"
-		"QGroupBox::indicator:unchecked { image: url(:/MoxyboxLevelCreator/Resources/uiGameplayCheckBoxUnchecked.png); }"
-	};*/
-
-	/*QString uiGameplayGroupBoxInnerStyle =
-	{
-		"QGroupBox { border-width: 0px;  background-color: #674003; }"
-	};*/
-
 	const int minBoxWidth = (screenWidth / 4) - 6;
-
-	/*QString uiGameplayTextBoxStyle =
-	{
-		"QTextEdit { border: 0px;  background-color: #674003;  color: #C4BB81; }"
-	};
-
-	QString uiGameplayLabelStyle =
-	{
-		"QLabel { border: 0px;  background-color: #674003;  color: #C4BB81; }"
-		"QLabel:disabled { border: 0px;  background-color: #674003;  color: #7E5F23; }"
-	};
-
-	QString uiGameplayLineEditStyle =
-	{
-		"QLineEdit { border-width: 1px;  border-style: solid;  border-color: #191405;  background-color: #8D9E45;  color: #191405; }"
-		"QLineEdit:disabled { border-width: 1px;  border-style: solid;  border-color: #533403;  background-color: #705713;  color: #533403; }"
-	};
-
-	QString uiGameplayNumEditStyle =
-	{
-		"QSpinBox { border-width: 1px;  border-style: solid;  border-color: #191405;  background-color: #8D9E45;  color: #191405; }"
-		"QSpinBox:disabled { border-width: 1px;  border-style: solid;  border-color: #533403;  background-color: #705713;  color: #533403; }"
-	};
-
-	QString uiGameplayKeymapBtnStyle =
-	{
-		"QPushButton { border-width: 1px;  border-style: solid;  border-color: #674003;  background-color: #674003;  color: #C4BB81; }"
-	};
-
-	QString uiGameplayKeymapModifBtnStyle =
-	{
-		"QPushButton { border-width: 1px;  border-style: solid;  border-color: #191405;  background-color: #8D9E45;  color: #191405; }"
-	};*/
 
 	const QString uiGameplayMessagesTokenPlaced = " token placed.";
 	const QString uiGameplayMessagesTokenDeleted = " token deleted.";
@@ -786,48 +699,6 @@ private:
 		std::unique_ptr<QPushButton> widget = std::make_unique<QPushButton>();
 	};
 	std::map<UiMenuBtnType, uiMenuBtnComponent> uiMenuBtnMap;
-
-	/*QString uiMenuGroupBoxStyle =
-	{
-		"QGroupBox { background-image: url(:/MoxyboxLevelCreator/Resources/uiMenuBtsBg.png); }"
-	};
-
-	QString uiMenuBtnStyle =
-	{
-		"QPushButton { background-color: rgba(255, 255, 255, 0);  border: none;  color: #C4BB81;  image: url(:/MoxyboxLevelCreator/Resources/invisible.png); }"
-	};*/
-
-	//QPixmap imgSavePromptWarning = QPixmap(":/MoxyboxLevelCreator/Resources/msg-box-warning.png");
-
-	/*QString uiMenuSavePromptWarningStyle =
-	{
-		"QMessageBox"
-		"{"
-			"border-width: 1px;"
-			"border-style: solid;"
-			"border-color: #8E7320;"
-			"background-color: #674003;"
-			"color: #C4BB81;"
-		"}"
-		"QMessageBox QLabel"
-		"{"
-			"border-width: 1px;"
-			"border-style: solid;"
-			"border-color: #674003;"
-			"background-color: #674003;"
-			"color: #C4BB81;"
-			"padding: 3px;"
-		"}"
-		"QMessageBox QPushButton"
-		"{"
-			"border-width: 2px;"
-			"border-style: solid;"
-			"border-color: #191405;"
-			"background-color: #8D9E45;"
-			"color: #191405;"
-			"padding: 2px 12px 2px 12px;"
-		"}"
-	};*/
 
 	// -----------
 	// FUNCTIONS
