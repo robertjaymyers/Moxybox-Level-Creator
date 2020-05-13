@@ -1,0 +1,46 @@
+<RCC>
+    <qresource prefix="/MoxyboxLevelCreator">
+        <file>Resources/error.png</file>
+        <file>Resources/gridTextureCornerDownL.png</file>
+        <file>Resources/gridTextureCornerDownR.png</file>
+        <file>Resources/gridTextureCornerUpL.png</file>
+        <file>Resources/gridTextureCornerUpR.png</file>
+        <file>Resources/gridTextureEdgeDownX.png</file>
+        <file>Resources/gridTextureEdgeLeftY.png</file>
+        <file>Resources/gridTextureEdgeRightY.png</file>
+        <file>Resources/gridTextureEdgeUpX.png</file>
+        <file>Resources/gridTextureInner.png</file>
+        <file>Resources/invisible.png</file>
+        <file>Resources/msg-box-warning.png</file>
+        <file>Resources/tokenImmobileBlock.png</file>
+        <file>Resources/tokenImmobileGate.png</file>
+        <file>Resources/tokenImmobileHazard.png</file>
+        <file>Resources/tokenImmobileKey.png</file>
+        <file>Resources/tokenPatrollerPusherDown.png</file>
+        <file>Resources/tokenPatrollerPusherDownRange.png</file>
+        <file>Resources/tokenPatrollerPusherLeft.png</file>
+        <file>Resources/tokenPatrollerPusherLeftRange.png</file>
+        <file>Resources/tokenPatrollerPusherRight.png</file>
+        <file>Resources/tokenPatrollerPusherRightRange.png</file>
+        <file>Resources/tokenPatrollerPusherUp.png</file>
+        <file>Resources/tokenPatrollerPusherUpRange.png</file>
+        <file>Resources/tokenPatrollerSuckerDown.png</file>
+        <file>Resources/tokenPatrollerSuckerDownRange.png</file>
+        <file>Resources/tokenPatrollerSuckerLeft.png</file>
+        <file>Resources/tokenPatrollerSuckerLeftRange.png</file>
+        <file>Resources/tokenPatrollerSuckerRight.png</file>
+        <file>Resources/tokenPatrollerSuckerRightRange.png</file>
+        <file>Resources/tokenPatrollerSuckerUp.png</file>
+        <file>Resources/tokenPatrollerSuckerUpRange.png</file>
+        <file>Resources/tokenPlacingOutline.png</file>
+        <file>Resources/tokenPlayer.png</file>
+        <file>Resources/tokenUtilPusherActive.png</file>
+        <file>Resources/tokenUtilPusherInactive.png</file>
+        <file>Resources/tokenUtilSuckerActive.png</file>
+        <file>Resources/tokenUtilSuckerInactive.png</file>
+        <file>Resources/uiGameplayCheckBoxChecked.png</file>
+        <file>Resources/uiGameplayCheckBoxUnchecked.png</file>
+        <file>Resources/uiMenuBtsBg.png</file>
+        <file>Icon/moxybox_level_creator_program_icon.ico</file>
+    </qresource>
+</RCC>
