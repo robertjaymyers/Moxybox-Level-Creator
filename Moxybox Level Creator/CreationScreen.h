@@ -86,6 +86,7 @@ private:
 		{ "imgImmobileGate", QPixmap(":/MoxyboxLevelCreator/Resources/tokenImmobileGate.png") },
 		{ "imgImmobileBlock", QPixmap(":/MoxyboxLevelCreator/Resources/tokenImmobileBlock.png") },
 		{ "imgImmobileHazard", QPixmap(":/MoxyboxLevelCreator/Resources/tokenImmobileHazard.png") },
+		{ "imgImmobileTeleport", QPixmap(":/MoxyboxLevelCreator/Resources/tokenImmobileTeleport.png") },
 		{ "imgPlayer", QPixmap(":/MoxyboxLevelCreator/Resources/tokenPlayer.png") },
 		{ "imgPatrollerPusherLeft", QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerPusherLeft.png") },
 		{ "imgPatrollerPusherRight", QPixmap(":/MoxyboxLevelCreator/Resources/tokenPatrollerPusherRight.png") },
@@ -339,7 +340,7 @@ private:
 	{
 		const qreal initialX;
 		const qreal initialY;
-		enum class Type { BLOCK, KEY, GATE, HAZARD, ERROR };
+		enum class Type { BLOCK, KEY, GATE, HAZARD, TELEPORT, ERROR };
 		Type type = Type::BLOCK;
 		enum class State { ACTIVE, INVISIBLE, HELD, ERROR };
 		State state = State::ACTIVE;
@@ -379,6 +380,8 @@ private:
 				return Type::GATE;
 			else if (str == "HAZARD")
 				return Type::HAZARD;
+			else if (str == "TELEPORT")
+				return Type::TELEPORT;
 			else
 				return Type::ERROR;
 		}
@@ -393,6 +396,8 @@ private:
 				return "GATE";
 			else if (type == Type::HAZARD)
 				return "HAZARD";
+			else if (type == Type::TELEPORT)
+				return "TELEPORT";
 			else
 				return "ERROR";
 		}
@@ -522,6 +527,7 @@ private:
 	std::map<QString, tokenImmobile> keysMap;
 	std::map<QString, tokenImmobile> gatesMap;
 	std::map<QString, tokenImmobile> hazardsMap;
+	std::map<QString, tokenImmobile> teleportsMap;
 	std::map<QString, tokenUtil> utilsMap;
 
 	const int highlightOffsetY = 2;
@@ -529,7 +535,7 @@ private:
 	const int highlightMovementSpeed = 1;
 	std::unique_ptr<QGraphicsPixmapItem> highlightToken = std::make_unique<QGraphicsPixmapItem>(nullptr);
 
-	enum class TokenType { NONE, PLAYER, PUSHER, SUCKER, BLOCK, KEY, GATE, HAZARD, UTIL_PUSH, UTIL_SUCK };
+	enum class TokenType { NONE, PLAYER, PUSHER, SUCKER, BLOCK, KEY, GATE, HAZARD, TELEPORT, UTIL_PUSH, UTIL_SUCK };
 	TokenType tokenType = TokenType::NONE;
 	const int fadedMin = 0;
 	const int fadedMax = 9; // Should match number of faded types (not including 'none').
@@ -545,6 +551,7 @@ private:
 		TokenType::HAZARD,
 		TokenType::KEY,
 		TokenType::GATE,
+		TokenType::TELEPORT,
 		TokenType::UTIL_PUSH,
 		TokenType::UTIL_SUCK,
 	};
@@ -558,6 +565,7 @@ private:
 		{ TokenType::HAZARD, "Hazard" },
 		{ TokenType::KEY, "Key" },
 		{ TokenType::GATE, "Gate" },
+		{ TokenType::TELEPORT, "Teleport" },
 		{ TokenType::UTIL_PUSH, "Spring Trap (Utility)" },
 		{ TokenType::UTIL_SUCK, "Magnet Trap (Utility)" }
 	};
@@ -651,13 +659,7 @@ private:
 	const QString uiGameplayMessagesTokenDeleted = " token deleted.";
 	const QString uiGameplayMessagesSquareOccupied = "That square is already in use.";
 	const QString uiGameplayMessagesPlayerAlreadyPlaced = "A player token is already placed. There can only be one.";
-	const QString uiGameplayMessagesObstacle = "Need force of impact to get past obstacles.";
-	const QString uiGameplayMessagesKeyObtained = "You got a key! Keys can be used to open pods.";
-	const QString uiGameplayMessagesKeyNeeded = "Key needed to open pod.";
-	const QString uiGameplayMessagesTrapPusherObtained = "You picked up a Spring Trap! Spring traps will knock back patrollers who hit them.";
-	const QString uiGameplayMessagesTrapPusherDeployed = "Spring Trap deployed.";
-	const QString uiGameplayMessagesTrapSuckerObtained = "You picked up a Magnet Trap! Magnet Traps will pull in patrollers who come near.";
-	const QString uiGameplayMessagesTrapSuckerDeployed = "Magnet Trap deployed.";
+	const QString uiGameplayMessagesTeleportLimitReached = "Two teleport tokens are already placed. Limit of two.";
 	const QString uiGameplayMessagesFileSaved = "File saved.";
 
 	// ---------

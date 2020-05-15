@@ -738,6 +738,7 @@ void CreationScreen::keyReleaseEvent(QKeyEvent *event)
 						keysMap.count(fadedPos) > 0 ||
 						gatesMap.count(fadedPos) > 0 ||
 						hazardsMap.count(fadedPos) > 0 ||
+						teleportsMap.count(fadedPos) > 0 ||
 						utilsMap.count(fadedPos) > 0)
 					{
 						uiGameplayMessagesTextBox.get()->setText(uiGameplayMessagesSquareOccupied);
@@ -745,6 +746,10 @@ void CreationScreen::keyReleaseEvent(QKeyEvent *event)
 					else if (tokenType == TokenType::PLAYER && !playersMap.empty())
 					{
 						uiGameplayMessagesTextBox.get()->setText(uiGameplayMessagesPlayerAlreadyPlaced);
+					}
+					else if (tokenType == TokenType::TELEPORT && teleportsMap.size() == 2)
+					{
+						uiGameplayMessagesTextBox.get()->setText(uiGameplayMessagesTeleportLimitReached);
 					}
 					else
 					{
@@ -877,6 +882,24 @@ void CreationScreen::keyReleaseEvent(QKeyEvent *event)
 							hazardsMap.at(fadedPos).item.get()->setPixmap(imgMap.at("imgImmobileHazard"));
 							hazardsMap.at(fadedPos).item.get()->setPos(fadedToken.get()->x(), fadedToken.get()->y());
 							break;
+						case TokenType::TELEPORT:
+							teleportsMap.insert
+							(
+								std::pair<QString, tokenImmobile>
+								(
+									fadedPos,
+									tokenImmobile
+									{
+										fadedToken.get()->x(),
+										fadedToken.get()->y(),
+										tokenImmobile::Type::TELEPORT
+									}
+								)
+							);
+							scene.get()->addItem(teleportsMap.at(fadedPos).item.get());
+							teleportsMap.at(fadedPos).item.get()->setPixmap(imgMap.at("imgImmobileTeleport"));
+							teleportsMap.at(fadedPos).item.get()->setPos(fadedToken.get()->x(), fadedToken.get()->y());
+							break;
 						case TokenType::UTIL_PUSH:
 							utilsMap.insert
 							(
@@ -979,6 +1002,13 @@ void CreationScreen::keyReleaseEvent(QKeyEvent *event)
 					scene.get()->removeItem(hazardsMap.at(fadedPos).item.get());
 					hazardsMap.erase(fadedPos);
 					uiGameplayMessagesTextBox.get()->setText(tokenDisplayNameMap.at(TokenType::HAZARD) + uiGameplayMessagesTokenDeleted);
+					setLevelModified(true);
+				}
+				else if (teleportsMap.count(fadedPos) > 0)
+				{
+					scene.get()->removeItem(teleportsMap.at(fadedPos).item.get());
+					teleportsMap.erase(fadedPos);
+					uiGameplayMessagesTextBox.get()->setText(tokenDisplayNameMap.at(TokenType::TELEPORT) + uiGameplayMessagesTokenDeleted);
 					setLevelModified(true);
 				}
 				else if (utilsMap.count(fadedPos) > 0)
@@ -1514,6 +1544,20 @@ bool CreationScreen::fileSave(const QString &fpath)
 				tokenImmobile::stateToString(hazard.second.state) +
 				")";
 		}
+		qStream << "::\r\n";
+
+		qStream << "::Teleport=";
+		for (auto& teleport : teleportsMap)
+		{
+			qStream <<
+				"(" +
+				QString::number(teleport.second.item.get()->x()) +
+				"," +
+				QString::number(teleport.second.item.get()->y()) +
+				"," +
+				tokenImmobile::stateToString(teleport.second.state) +
+				")";
+		}
 		qStream << "::";
 
 		fileWrite.close();
@@ -1562,6 +1606,9 @@ void CreationScreen::fileNew()
 			for (const auto& obj : hazardsMap)
 				scene.get()->removeItem(obj.second.item.get());
 
+			for (const auto& obj : teleportsMap)
+				scene.get()->removeItem(obj.second.item.get());
+
 			for (const auto& obj : utilsMap)
 				scene.get()->removeItem(obj.second.item.get());
 
@@ -1572,6 +1619,7 @@ void CreationScreen::fileNew()
 			keysMap.clear();
 			gatesMap.clear();
 			hazardsMap.clear();
+			teleportsMap.clear();
 			utilsMap.clear();
 
 			hidePatrollerHoverDisplay();
@@ -1854,6 +1902,33 @@ void CreationScreen::fileLoad()
 							scene.get()->addItem(hazardsMap.at(componentsKey).item.get());
 							hazardsMap.at(componentsKey).item.get()->setPixmap(imgMap.at("imgImmobileHazard"));
 							hazardsMap.at(componentsKey).item.get()->setPos(components[0].toDouble(), components[1].toDouble());
+						}
+					}
+					else if (line.contains("::Teleport="))
+					{
+						QString dataLine = extractSubstringInbetweenQt("::Teleport=", "::", line);
+						QStringList dataList = extractSubstringInbetweenQtLoopList("(", ")", dataLine);
+
+						for (int i = 0; i < dataList.length(); i++)
+						{
+							QStringList components = dataList[i].split(",", QString::SkipEmptyParts);
+							QString componentsKey = components[0] + components[1];
+							teleportsMap.insert
+							(
+								std::pair<QString, tokenImmobile>
+								(
+									componentsKey,
+									tokenImmobile
+									{
+										components[0].toDouble(),
+										components[1].toDouble(),
+										tokenImmobile::typeToEnum(components[2])
+									}
+								)
+							);
+							scene.get()->addItem(teleportsMap.at(componentsKey).item.get());
+							teleportsMap.at(componentsKey).item.get()->setPixmap(imgMap.at("imgImmobileTeleport"));
+							teleportsMap.at(componentsKey).item.get()->setPos(components[0].toDouble(), components[1].toDouble());
 						}
 					}
 				}
@@ -2169,6 +2244,8 @@ QPixmap CreationScreen::tokenTypeToImg(const TokenType &type)
 		return imgMap.at("imgImmobileGate");
 	else if (type == TokenType::HAZARD)
 		return imgMap.at("imgImmobileHazard");
+	else if (type == TokenType::TELEPORT)
+		return imgMap.at("imgImmobileTeleport");
 	else if (type == TokenType::UTIL_PUSH)
 		return imgMap.at("imgUtilPusherInactive");
 	else if (type == TokenType::UTIL_SUCK)
@@ -2193,6 +2270,8 @@ QPixmap CreationScreen::stateToImg(const tokenImmobile::State &state, const toke
 			return imgMap.at("imgImmobileBlock");
 		else if (type == tokenImmobile::Type::HAZARD)
 			return imgMap.at("imgImmobileHazard");
+		else if (type == tokenImmobile::Type::TELEPORT)
+			return imgMap.at("imgImmobileTeleport");
 		else
 			return imgError;
 	}
