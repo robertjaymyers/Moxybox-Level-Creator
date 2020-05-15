@@ -538,7 +538,7 @@ private:
 	enum class TokenType { NONE, PLAYER, PUSHER, SUCKER, BLOCK, KEY, GATE, HAZARD, TELEPORT, UTIL_PUSH, UTIL_SUCK };
 	TokenType tokenType = TokenType::NONE;
 	const int fadedMin = 0;
-	const int fadedMax = 9; // Should match number of faded types (not including 'none').
+	const int fadedMax = 10; // Should match number of faded types (not including 'none').
 	int fadedNum = fadedMin;
 
 	std::vector<TokenType> tokenTypeList =
