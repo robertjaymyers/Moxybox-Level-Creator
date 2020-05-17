@@ -467,40 +467,35 @@ private:
 	// ------
 	// GRID
 	// ------
-	struct gridPieceInner // No facing orientation needed (appearance identical no matter rotation)
+	struct gridPiece
 	{
+		QPoint gridPoint;
+		QPointF pos;
 		std::unique_ptr<QGraphicsPixmapItem> item = std::make_unique<QGraphicsPixmapItem>(nullptr);
 	};
-	struct gridPieceEdge // Facing orientation is based on up/down/left/right
-	{
-		std::unique_ptr<QGraphicsPixmapItem> item = std::make_unique<QGraphicsPixmapItem>(nullptr);
-		enum class Facing { UP, DOWN, LEFT, RIGHT };
-		Facing facing = Facing::UP;
-	};
-	struct gridPieceCorner // Facing orientation is based on upperLeft/upperRight/lowerLeft/lowerRight
-	{
-		std::unique_ptr<QGraphicsPixmapItem> item = std::make_unique<QGraphicsPixmapItem>(nullptr);
-		enum class Facing { UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT };
-		Facing facing = Facing::UP_LEFT;
-	};
-	std::vector<gridPieceInner> gridPiecesInner;
-	std::vector<gridPieceEdge> gridPiecesEdge;
-	std::vector<gridPieceCorner> gridPiecesCorner;
+	std::vector<gridPiece> gridPiecesAll;
+
+	// Note that there's some framework lingering here from a scrapped feature to have grid size modifiable by level.
+	// As well as a scrapped framework to have the size of grid pieces modifiable (for zooming and the like).
+	// (Both are from an SLD2 version of the game, where implementation details are different.)
+	// This has been scrapped, setting everything to const, though some of the framework details may linger.
+	// If you want to make grid row/col size modifiable, for example, you'll need to remove their const flag.
+	// If you want to change grid piece size, it's probably easier to use QGraphicsView's "scaling".
 	const int gridPieceZ = 0; // Z value for grid pieces should be lower than that of tokens to be under them.
-	const int gridRowSize = 20; // This should not be higher than screenWidth / gridPieceSizeDst
-	const int gridColSize = 10; // This should not be higher than ((2/3rds of screenHeight) / gridPieceSizeDst) to have room for UI below it
+	const int gridRowSize = 20; // This should not be higher than screenWidth / gridPieceSize
+	const int gridColSize = 10; // This should not be higher than ((2/3rds of screenHeight) / gridPieceSize) to have room for UI below it
 	const int gridPieceSizeDefault = 40;
-	int gridPieceSize = gridPieceSizeDefault;
+	const int gridPieceSize = gridPieceSizeDefault;
 	const int gridPieceSizeDstMultiplier = 2;
 	const int gridPieceSizeSrc = 40;
 	const int gridAnchorX = 0;
 	const int gridAnchorY = 0;
-	int gridWidth = gridRowSize * gridPieceSize;
-	int gridHeight = gridColSize * gridPieceSize;
-	int gridBoundUp = gridAnchorY;
-	int gridBoundDown = gridHeight + gridAnchorY;
-	int gridBoundLeft = gridAnchorX;
-	int gridBoundRight = gridWidth + gridAnchorX;
+	const int gridWidth = gridRowSize * gridPieceSize;
+	const int gridHeight = gridColSize * gridPieceSize;
+	const int gridBoundUp = gridAnchorY;
+	const int gridBoundDown = gridHeight + gridAnchorY;
+	const int gridBoundLeft = gridAnchorX;
+	const int gridBoundRight = gridWidth + gridAnchorX;
 
 	const int screenWidth = 800;
 	const int screenHeight = 600;
