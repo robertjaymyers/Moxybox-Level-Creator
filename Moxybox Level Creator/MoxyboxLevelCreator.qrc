@@ -43,5 +43,6 @@
         <file>Resources/uiMenuBtsBg.png</file>
         <file>Icon/moxybox_level_creator_program_icon.ico</file>
         <file>Resources/tokenImmobileTeleport.png</file>
+        <file>Fonts/Pixellari.ttf</file>
     </qresource>
 </RCC>
