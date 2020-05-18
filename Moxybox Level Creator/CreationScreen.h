@@ -656,6 +656,11 @@ private:
 	const QString uiGameplayMessagesPlayerAlreadyPlaced = "A player token is already placed. There can only be one.";
 	const QString uiGameplayMessagesTeleportLimitReached = "Two teleport tokens are already placed. Limit of two.";
 	const QString uiGameplayMessagesFileSaved = "File saved.";
+	const QString uiGameplayMessagesDesignWarningHeader = "Design Warnings:";
+	const QString uiGameplayMessagesDesignWarningPlayer = "No player token placed.";
+	const QString uiGameplayMessagesDesignWarningNoKeyGate = "No key/gate pair placed.";
+	const QString uiGameplayMessagesDesignWarningKeyGateUneven = "Uneven number of keys and gates placed.";
+	const QString uiGameplayMessagesDesignWarningTeleport = "Only one teleport token placed.";
 
 	// ---------
 	// UI MENU

@@ -1490,7 +1490,36 @@ bool CreationScreen::fileSave(const QString &fpath)
 		fileCurrent = fpath;
 		setLevelModified(false);
 		updateWindowTitle(QFileInfo(fpath).baseName());
+
+		// We warn user through messages if the level they just saved is incomplete.
+		// A level is considered incomplete if some aspect of it is such that it is 
+		// impossible to complete, or would cause issues in the main game.
+		// For example, placing teleports, but only placing one means the teleport will go nowhere
+		// and will cause an out of range error, since the main game expects two if they exist at all.
+		// Note: We don't try to cover all design issues (can you get to a key behind obstacles?) as this 
+		// would be exceedingly complicated to predict algorithmically and communicate to the user effectively.
 		uiGameplayMessagesTextBox.get()->setText(uiGameplayMessagesFileSaved);
+		if (playersMap.size() == 0 ||
+			gatesMap.size() != keysMap.size() ||
+			gatesMap.size() == 0 ||
+			keysMap.size() == 0 ||
+			teleportsMap.size() == 1
+			)
+		{
+			uiGameplayMessagesTextBox.get()->append(uiGameplayMessagesDesignWarningHeader);
+
+			if (playersMap.size() == 0)
+				uiGameplayMessagesTextBox.get()->append(uiGameplayMessagesDesignWarningPlayer);
+
+			if (gatesMap.size() == 0 || keysMap.size() == 0)
+				uiGameplayMessagesTextBox.get()->append(uiGameplayMessagesDesignWarningNoKeyGate);
+			else if (gatesMap.size() != keysMap.size())
+				uiGameplayMessagesTextBox.get()->append(uiGameplayMessagesDesignWarningKeyGateUneven);
+
+			if (teleportsMap.size() == 1)
+				uiGameplayMessagesTextBox.get()->append(uiGameplayMessagesDesignWarningTeleport);
+		}
+
 		uiMenuResumeCreating();
 		return true;
 	}
@@ -1598,23 +1627,25 @@ void CreationScreen::fileLoad()
 					else if (line.contains("::Player="))
 					{
 						QStringList components = extractSubstringInbetweenQt("::Player=", "::", line).split(",", QString::SkipEmptyParts);
-						QString componentsKey = components[0] + components[1];
-						playersMap.insert
-						(
-							std::pair<QString, tokenPlayer>
+						if (!components.isEmpty())
+						{
+							QString componentsKey = components[0] + components[1];
+							playersMap.insert
 							(
-								componentsKey,
-								tokenPlayer
-								{
-									components[0].toDouble(),
-									components[1].toDouble()
-								}
-							)
-						);
-						scene.get()->addItem(playersMap.at(componentsKey).item.get());
-						playersMap.at(componentsKey).item.get()->setPixmap(imgMap.at("imgPlayer"));
-						playersMap.at(componentsKey).item.get()->setPos(components[0].toDouble(), components[1].toDouble());
-
+								std::pair<QString, tokenPlayer>
+								(
+									componentsKey,
+									tokenPlayer
+									{
+										components[0].toDouble(),
+										components[1].toDouble()
+									}
+								)
+							);
+							scene.get()->addItem(playersMap.at(componentsKey).item.get());
+							playersMap.at(componentsKey).item.get()->setPixmap(imgMap.at("imgPlayer"));
+							playersMap.at(componentsKey).item.get()->setPos(components[0].toDouble(), components[1].toDouble());
+						}
 					}
 					else if (line.contains("::Gate=") && line.contains("::Key="))
 					{
