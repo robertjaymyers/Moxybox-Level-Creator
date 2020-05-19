@@ -1209,12 +1209,10 @@ bool CreationScreen::fileSaveInterruptPromptPassed()
 
 void CreationScreen::prefSave()
 {
-	QFile fileWrite(appExecutablePath + "/config.txt");
+	QFile fileWrite(windowsHomePath + "/config.txt");
 	if (fileWrite.open(QIODevice::WriteOnly))
 	{
 		QTextStream qStream(&fileWrite);
-
-		qStream << "firstTimeSetup=false\r\n\r\n";
 
 		qStream << "CREATOR:\r\n"
 			"creatorName=" + uiGameplayStatsInputCreatorName.get()->text() + "\r\n"
@@ -1242,22 +1240,21 @@ void CreationScreen::prefSave()
 
 void CreationScreen::prefLoad()
 {
-	QFile fileRead(appExecutablePath + "/config.txt");
+	// If the config file exists in the home path we assume first time setup has happened.
+	// Otherwise, we assume it hasn't and run first time setup to generate home path folders/files.
+	const QString configPath = windowsHomePath + "/config.txt";
+	if (!QFile(configPath).exists())
+		return;
+	else
+		firstTimeSetup = false;
+
+	QFile fileRead(configPath);
 	if (fileRead.open(QIODevice::ReadOnly))
 	{
 		QTextStream qStream(&fileRead);
 		while (!qStream.atEnd())
 		{
 			QString line = qStream.readLine();
-
-			if (line.contains("firstTimeSetup="))
-			{
-				QString extracted = extractSubstringInbetweenQt("=", "", line);
-				if (extracted == "true" || extracted == "false")
-				{
-					firstTimeSetup = QVariant(extracted).toBool();
-				}
-			}
 
 			if (line.contains("creatorName="))
 			{

@@ -41,7 +41,7 @@ private:
 
 	std::unique_ptr<QGraphicsScene> scene = std::make_unique<QGraphicsScene>();
 
-	bool firstTimeSetup = false;
+	bool firstTimeSetup = true;
 
 	const QString distributorName = "Robert Jay Myers Apps";
 	const QString windowTitleProgramName = "Moxybox Level Creator";
