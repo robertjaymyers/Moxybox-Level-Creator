@@ -41,15 +41,19 @@ private:
 
 	std::unique_ptr<QGraphicsScene> scene = std::make_unique<QGraphicsScene>();
 
+	bool firstTimeSetup = false;
+
+	const QString distributorName = "Robert Jay Myers Apps";
+	const QString windowTitleProgramName = "Moxybox Level Creator";
+	const QString windowTitlePlaceholder = "[*]";
+	const QString windowTitleUntitled = "Untitled";
 	const QString appExecutablePath = QCoreApplication::applicationDirPath();
+	const QString windowsHomePath = QDir::homePath() + "/Documents/" + distributorName + "/" + windowTitleProgramName;
+	const QString savesFolderName = "LevelData";
 
-	QString fileDirLastSaved = appExecutablePath + "/LevelData";
-	QString fileDirLastOpened = appExecutablePath + "/LevelData";
+	QString fileDirLastSaved = windowsHomePath + "/" + savesFolderName;
+	QString fileDirLastOpened = windowsHomePath + "/" + savesFolderName;
 	QString fileCurrent = "";
-
-	const QString winTitleProgramName = "Moxybox Level Creator";
-	const QString winTitlePlaceholder = "[*]";
-	const QString winTitleUntitled = "Untitled";
 
 	enum class GameState { NONE, CREATING, PAUSED, KEYBINDING, INPUTTING };
 	GameState gameState = GameState::NONE;

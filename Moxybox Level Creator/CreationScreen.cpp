@@ -83,6 +83,13 @@ CreationScreen::CreationScreen(QWidget *parent)
 
 	prefLoad();
 
+	if (firstTimeSetup)
+	{
+		QDir dirSaves(windowsHomePath + "/" + savesFolderName);
+		if (!dirSaves.exists())
+			dirSaves.mkpath(".");
+	}
+
 	setStyleSheet(styleMap.at("baseStyle"));
 	setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
@@ -1207,6 +1214,8 @@ void CreationScreen::prefSave()
 	{
 		QTextStream qStream(&fileWrite);
 
+		qStream << "firstTimeSetup=false\r\n\r\n";
+
 		qStream << "CREATOR:\r\n"
 			"creatorName=" + uiGameplayStatsInputCreatorName.get()->text() + "\r\n"
 			"\r\n"
@@ -1240,6 +1249,16 @@ void CreationScreen::prefLoad()
 		while (!qStream.atEnd())
 		{
 			QString line = qStream.readLine();
+
+			if (line.contains("firstTimeSetup="))
+			{
+				QString extracted = extractSubstringInbetweenQt("=", "", line);
+				if (extracted == "true" || extracted == "false")
+				{
+					firstTimeSetup = QVariant(extracted).toBool();
+				}
+			}
+
 			if (line.contains("creatorName="))
 			{
 				QString newName = extractSubstringInbetweenQt("=", "", line);
@@ -1580,7 +1599,7 @@ void CreationScreen::fileNew()
 
 			setLevelModified(false);
 			fileCurrent = "";
-			updateWindowTitle(winTitleUntitled);
+			updateWindowTitle(windowTitleUntitled);
 			uiMenuResumeCreating();
 		}
 	}
@@ -2178,7 +2197,7 @@ void CreationScreen::updateWindowTitle(const QString &filename)
 {
 	this->parentWidget()->parentWidget()->setWindowTitle
 	(
-		winTitleProgramName + " - " + winTitlePlaceholder + filename
+		windowTitleProgramName + " - " + windowTitlePlaceholder + filename
 	);
 }
 
