@@ -51,6 +51,8 @@ private:
 	const QString windowsHomePath = QDir::homePath() + "/Documents/" + distributorName + "/" + windowTitleProgramName;
 	const QString savesFolderName = "LevelData";
 
+	const QString themePathMods = windowsHomePath + "/Mods/Theme";
+
 	QString fileDirLastSaved = windowsHomePath + "/" + savesFolderName;
 	QString fileDirLastOpened = windowsHomePath + "/" + savesFolderName;
 	QString fileCurrent = "";

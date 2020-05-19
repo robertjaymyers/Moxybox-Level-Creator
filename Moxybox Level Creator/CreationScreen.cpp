@@ -86,8 +86,13 @@ CreationScreen::CreationScreen(QWidget *parent)
 	if (firstTimeSetup)
 	{
 		QDir dirSaves(windowsHomePath + "/" + savesFolderName);
+		QDir dirThemeMods(themePathMods + "/Images");
+
 		if (!dirSaves.exists())
 			dirSaves.mkpath(".");
+
+		if (!dirThemeMods.exists())
+			dirThemeMods.mkpath(".");
 	}
 
 	setStyleSheet(styleMap.at("baseStyle"));
@@ -2553,11 +2558,11 @@ QString CreationScreen::generateHash64Hex(const std::string &strToHash)
 
 void CreationScreen::modLoadThemeIfExists()
 {
-	const QString modThemePath = appExecutablePath + "/Mods/Theme/theme.MoxyStyle";
-	if (!QFile(modThemePath).exists())
+	const QString stylePath = themePathMods + "/theme.MoxyStyle";
+	if (!QFile(stylePath).exists())
 		return;
 
-	QFile fileRead(modThemePath);
+	QFile fileRead(stylePath);
 	if (fileRead.open(QIODevice::ReadOnly))
 	{
 		QTextStream qStream(&fileRead);
@@ -2619,7 +2624,7 @@ void CreationScreen::modLoadThemeIfExists()
 					// QString allows us to do a simple replace operation based on presence of %1.
 					// If we were to have more than one kind of replacement we need to do, we can set up %2, %3, etc.
 					if (line.contains("%1"))
-						style.second = extractSubstringInbetweenQt(identifier, "::::", line).arg(appExecutablePath);
+						style.second = extractSubstringInbetweenQt(identifier, "::::", line).arg(windowsHomePath);
 					else
 						style.second = extractSubstringInbetweenQt(identifier, "::::", line);
 					continue;
@@ -2631,7 +2636,7 @@ void CreationScreen::modLoadThemeIfExists()
 				QString identifier = "::" + img.first + "=";
 				if (line.contains(identifier))
 				{
-					img.second = QPixmap(appExecutablePath + extractSubstringInbetweenQt(identifier, "::", line));
+					img.second = QPixmap(windowsHomePath + extractSubstringInbetweenQt(identifier, "::", line));
 					continue;
 				}
 			}
